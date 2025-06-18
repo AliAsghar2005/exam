@@ -23,14 +23,14 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'yarn'  
+          cache: 'npm'
 
       - name: Install dependencies
-        run: yarn install  
+        run: npm install
 
       - name: Run tests
         id: test
-        run: yarn test  
+        run: npm test
 
       - name: Notify success
         if: ${{ success() }}
@@ -39,3 +39,4 @@ jobs:
       - name: Notify failure
         if: ${{ failure() }}
         run: echo "Tests failed. Please check the logs above to fix the issues."
+
