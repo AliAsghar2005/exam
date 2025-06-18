@@ -1,16 +1,41 @@
-name: CI Pipeline
-on: [push, pull_request]
+name: Node.js CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - 'feature/**'  
+  pull_request:
+    branches:
+      - main
+      - master
+
 jobs:
-  build:
-    runs-on: unbuntu-latest
+  build-and-test:
+    runs-on: ubuntu-latest  
+
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: '14'
-      - name: Install Dependencies
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install dependencies
         run: npm install
-      - name: Run Tests
+
+      - name: Run tests
+        id: test
         run: npm test
+
+      - name: Notify success
+        if: ${{ success() }}
+        run: echo "All tests passed successfully."
+
+      - name: Notify failure
+        if: ${{ failure() }}
+        run: echo "Tests failed. Please check the logs above to fix the issues."
